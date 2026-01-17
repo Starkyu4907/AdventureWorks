@@ -5,9 +5,8 @@ with source as (
 staged as (
   select
     cast(salesorderid as bigint)              as salesorderid,
-    cast(salesreasonid as bigint)             as salesreasonid,
-    cast(modifieddate as timestamp)           as modifieddate
+    cast(salesreasonid as bigint)             as salesreasonid
   from source
 )
 
-select * from staged;
+select * from staged

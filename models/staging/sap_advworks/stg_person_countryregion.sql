@@ -5,9 +5,8 @@ with source as (
 staged as (
   select
     cast(countryregioncode as string)         as countryregioncode,
-    cast(name as string)                      as name,
-    cast(modifieddate as timestamp)           as modifieddate
+    cast(name as string)                      as name
   from source
 )
 
-select * from staged;
+select * from staged
