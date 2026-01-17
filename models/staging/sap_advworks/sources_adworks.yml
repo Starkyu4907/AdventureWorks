@@ -1,0 +1,262 @@
+version: 2
+
+sources:
+  - name: adventure_works
+    description: "Tabelas transacionais brutas do banco Adventure Works (fea_academy.adventure_works)."
+    database: fea_academy
+    schema: adventure_works
+
+    tables:
+      # ------------------------
+      # SALES
+      # ------------------------
+      - name: sales_salesorderheader
+        description: "Cabeçalho do pedido de venda (1 linha por pedido)."
+        columns:
+          - name: salesorderid
+            description: "Identificador do pedido."
+            tests:
+              - not_null
+              - unique
+          - name: orderdate
+            description: "Data do pedido."
+            tests:
+              - not_null
+          - name: customerid
+            description: "Cliente associado ao pedido."
+            tests:
+              - not_null
+              - relationships:
+                  to: source('adventure_works', 'sales_customer')
+                  field: customerid
+          - name: shiptoaddressid
+            description: "Endereço de entrega do pedido."
+            tests:
+              - relationships:
+                  to: source('adventure_works', 'person_address')
+                  field: addressid
+          - name: creditcardid
+            description: "Cartão de crédito utilizado no pedido (quando aplicável)."
+            tests:
+              - relationships:
+                  to: source('adventure_works', 'sales_creditcard')
+                  field: creditcardid
+          - name: status
+            description: "Código de status do pedido (1–6 conforme documentação do Adventure Works)."
+
+      - name: sales_salesorderdetail
+        description: "Itens do pedido de venda (1 linha por item do pedido)."
+        columns:
+          - name: salesorderdetailid
+            description: "Identificador do item do pedido."
+            tests:
+              - not_null
+              - unique
+          - name: salesorderid
+            description: "Identificador do pedido (FK para o cabeçalho)."
+            tests:
+              - not_null
+              - relationships:
+                  to: source('adventure_works', 'sales_salesorderheader')
+                  field: salesorderid
+          - name: productid
+            description: "Produto vendido."
+            tests:
+              - not_null
+              - relationships:
+                  to: source('adventure_works', 'production_product')
+                  field: productid
+          - name: orderqty
+            description: "Quantidade comprada."
+            tests:
+              - not_null
+          - name: unitprice
+            description: "Preço unitário do item."
+            tests:
+              - not_null
+          - name: unitpricediscount
+            description: "Desconto percentual aplicado no item (quando aplicável)."
+
+      - name: sales_customer
+        description: "Entidade de cliente utilizada nas vendas; pode representar pessoa (personid) e/ou loja (storeid)."
+        columns:
+          - name: customerid
+            description: "Identificador do cliente."
+            tests:
+              - not_null
+              - unique
+          - name: personid
+            description: "Identificador da pessoa (quando cliente é individual)."
+            tests:
+              - relationships:
+                  to: source('adventure_works', 'person_person')
+                  field: businessentityid
+          - name: storeid
+            description: "Identificador da loja/empresa (quando cliente é loja)."
+            tests:
+              - relationships:
+                  to: source('adventure_works', 'sales_store')
+                  field: businessentityid
+
+      - name: sales_store
+        description: "Cadastro de lojas/empresas (clientes do tipo Store)."
+        columns:
+          - name: businessentityid
+            description: "Identificador da loja/empresa."
+            tests:
+              - not_null
+              - unique
+          - name: name
+            description: "Nome da loja/empresa."
+            tests:
+              - not_null
+
+      - name: sales_creditcard
+        description: "Cadastro de cartões de crédito."
+        columns:
+          - name: creditcardid
+            description: "Identificador do cartão."
+            tests:
+              - not_null
+              - unique
+          - name: cardtype
+            description: "Tipo do cartão (ex.: SuperiorCard)."
+            tests:
+              - not_null
+
+      - name: sales_salesreason
+        description: "Cadastro de motivos de venda (Sales Reason)."
+        columns:
+          - name: salesreasonid
+            description: "Identificador do motivo."
+            tests:
+              - not_null
+              - unique
+          - name: name
+            description: "Nome do motivo."
+            tests:
+              - not_null
+          - name: reasontype
+            description: "Tipo do motivo (ex.: Promotion, Marketing, Other)."
+
+      - name: sales_salesorderheadersalesreason
+        description: "Tabela ponte entre pedidos (SalesOrderHeader) e motivos (SalesReason)."
+        columns:
+          - name: salesorderid
+            description: "Identificador do pedido."
+            tests:
+              - not_null
+              - relationships:
+                  to: source('adventure_works', 'sales_salesorderheader')
+                  field: salesorderid
+          - name: salesreasonid
+            description: "Identificador do motivo."
+            tests:
+              - not_null
+              - relationships:
+                  to: source('adventure_works', 'sales_salesreason')
+                  field: salesreasonid
+
+      # ------------------------
+      # PERSON (localização e nomes)
+      # ------------------------
+      - name: person_person
+        description: "Cadastro de pessoas (nomes) referenciadas por clientes e colaboradores."
+        columns:
+          - name: businessentityid
+            description: "Identificador da pessoa."
+            tests:
+              - not_null
+              - unique
+          - name: firstname
+            description: "Primeiro nome."
+          - name: lastname
+            description: "Sobrenome."
+
+      - name: person_address
+        description: "Cadastro de endereços."
+        columns:
+          - name: addressid
+            description: "Identificador do endereço."
+            tests:
+              - not_null
+              - unique
+          - name: city
+            description: "Cidade."
+            tests:
+              - not_null
+          - name: stateprovinceid
+            description: "Identificador do estado/província."
+            tests:
+              - not_null
+              - relationships:
+                  to: source('adventure_works', 'person_stateprovince')
+                  field: stateprovinceid
+
+      - name: person_stateprovince
+        description: "Cadastro de estados/províncias."
+        columns:
+          - name: stateprovinceid
+            description: "Identificador do estado/província."
+            tests:
+              - not_null
+              - unique
+          - name: name
+            description: "Nome do estado/província."
+            tests:
+              - not_null
+          - name: countryregioncode
+            description: "Código do país/região."
+            tests:
+              - not_null
+              - relationships:
+                  to: source('adventure_works', 'person_countryregion')
+                  field: countryregioncode
+
+      - name: person_countryregion
+        description: "Cadastro de países/regiões."
+        columns:
+          - name: countryregioncode
+            description: "Código do país/região."
+            tests:
+              - not_null
+              - unique
+          - name: name
+            description: "Nome do país/região."
+            tests:
+              - not_null
+
+      # ------------------------
+      # PRODUCTION
+      # ------------------------
+      - name: production_product
+        description: "Cadastro de produtos."
+        columns:
+          - name: productid
+            description: "Identificador do produto."
+            tests:
+              - not_null
+              - unique
+          - name: name
+            description: "Nome do produto."
+            tests:
+              - not_null
+          - name: productnumber
+            description: "Código do produto."
+          - name: color
+            description: "Cor do produto (quando aplicável)."
+          - name: listprice
+            description: "Preço de lista."
+
+      - name: production_productmodel
+        description: "Cadastro de modelos de produto (opcional para enriquecer a dim_product)."
+        columns:
+          - name: productmodelid
+            description: "Identificador do modelo."
+            tests:
+              - not_null
+              - unique
+          - name: name
+            description: "Nome do modelo."
+            tests:
+              - not_null
