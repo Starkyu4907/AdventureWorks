@@ -27,7 +27,7 @@ base as (
     detail.orderqty,
     detail.unitprice,
     detail.unitpricediscount,
-    one_reason.salesreasonid as salesreasonid
+    one_reason.salesreasonid
   from detail
   join header
     on detail.salesorderid = header.salesorderid
