@@ -6,12 +6,12 @@ with base_dates as (
 
 final as (
     select
-        cast(date_format(date, 'yyyyMMdd') as int) as date_sk,
-        date                                       as date,
-        year(date)                                 as year,
-        month(date)                                as month,
-        cast(date_format(date, 'MMMM') as string)  as month_name,
-        quarter(date)                              as quarter
+        cast(date_format(date, 'yyyyMMdd') as int)      as date_sk,
+        date                                            as date,
+        year(date)                                      as year,
+        month(date)                                     as month,
+        cast(date_format(date, 'MMMM') as string)       as month_name,
+        quarter(date)                                   as quarter
     from base_dates
 )
 

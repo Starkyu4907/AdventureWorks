@@ -9,9 +9,9 @@ with sr as (
 
 final as (
     select
-            salesreasonid as salesreasonid,
-            reason_name as reason_name,
-            reasontype as reasontype
+            salesreasonid           as salesreasonid,
+            reason_name             as reason_name,
+            reasontype              as reasontype
     from sr
 )
 

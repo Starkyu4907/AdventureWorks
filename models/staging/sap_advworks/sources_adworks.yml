@@ -36,16 +36,16 @@ sources:
                   to: source('adventure_works', 'person_address')
                   field: addressid
           - name: creditcardid
-            description: "Cartão de crédito utilizado no pedido (quando aplicável)."
+            description: "Cartão de crédito utilizado no pedido."
             tests:
               - relationships:
                   to: source('adventure_works', 'sales_creditcard')
                   field: creditcardid
           - name: status
-            description: "Código de status do pedido (1–6 conforme documentação do Adventure Works)."
+            description: "Código de status do pedido."
 
       - name: sales_salesorderdetail
-        description: "Itens do pedido de venda (1 linha por item do pedido)."
+        description: "Itens do pedido de venda."
         columns:
           - name: salesorderdetailid
             description: "Identificador do item do pedido."
@@ -53,7 +53,7 @@ sources:
               - not_null
               - unique
           - name: salesorderid
-            description: "Identificador do pedido (FK para o cabeçalho)."
+            description: "Identificador do pedido."
             tests:
               - not_null
               - relationships:
@@ -75,7 +75,7 @@ sources:
             tests:
               - not_null
           - name: unitpricediscount
-            description: "Desconto percentual aplicado no item (quando aplicável)."
+            description: "Desconto percentual aplicado no item."
 
       - name: sales_customer
         description: "Entidade de cliente utilizada nas vendas; pode representar pessoa (personid) e/ou loja (storeid)."
@@ -86,20 +86,20 @@ sources:
               - not_null
               - unique
           - name: personid
-            description: "Identificador da pessoa (quando cliente é individual)."
+            description: "Identificador da pessoa."
             tests:
               - relationships:
                   to: source('adventure_works', 'person_person')
                   field: businessentityid
           - name: storeid
-            description: "Identificador da loja/empresa (quando cliente é loja)."
+            description: "Identificador da loja/empresa."
             tests:
               - relationships:
                   to: source('adventure_works', 'sales_store')
                   field: businessentityid
 
       - name: sales_store
-        description: "Cadastro de lojas/empresas (clientes do tipo Store)."
+        description: "Cadastro de lojas/empresas."
         columns:
           - name: businessentityid
             description: "Identificador da loja/empresa."
@@ -120,12 +120,12 @@ sources:
               - not_null
               - unique
           - name: cardtype
-            description: "Tipo do cartão (ex.: SuperiorCard)."
+            description: "Tipo do cartão."
             tests:
               - not_null
 
       - name: sales_salesreason
-        description: "Cadastro de motivos de venda (Sales Reason)."
+        description: "Cadastro de motivos de venda."
         columns:
           - name: salesreasonid
             description: "Identificador do motivo."
@@ -140,7 +140,7 @@ sources:
             description: "Tipo do motivo (ex.: Promotion, Marketing, Other)."
 
       - name: sales_salesorderheadersalesreason
-        description: "Tabela ponte entre pedidos (SalesOrderHeader) e motivos (SalesReason)."
+        description: "Tabela ponte entre pedidos e motivos."
         columns:
           - name: salesorderid
             description: "Identificador do pedido."
@@ -161,7 +161,7 @@ sources:
       # PERSON (localização e nomes)
       # ------------------------
       - name: person_person
-        description: "Cadastro de pessoas (nomes) referenciadas por clientes e colaboradores."
+        description: "Cadastro de pessoas referenciadas por clientes e colaboradores."
         columns:
           - name: businessentityid
             description: "Identificador da pessoa."
@@ -244,12 +244,12 @@ sources:
           - name: productnumber
             description: "Código do produto."
           - name: color
-            description: "Cor do produto (quando aplicável)."
+            description: "Cor do produto."
           - name: listprice
             description: "Preço de lista."
 
       - name: production_productmodel
-        description: "Cadastro de modelos de produto (opcional para enriquecer a dim_product)."
+        description: "Cadastro de modelos de produto."
         columns:
           - name: productmodelid
             description: "Identificador do modelo."
