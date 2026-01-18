@@ -20,29 +20,30 @@ with base as (
 final as (
   select
     -- Degenerate keys
-    base.salesorderid                          as salesorderid,
-    base.salesorderdetailid                    as salesorderdetailid,
+    base.salesorderid                            as salesorderid,
+    base.salesorderdetailid                      as salesorderdetailid,
 
-    -- FKs (seus nomes)
+    -- FKs
     cast(date_format(base.orderdate, 'yyyyMMdd') as int) as date_fk,
-    base.productid                              as productid_fk,
-    base.customerid                             as customerid_fk,
-    base.shiptoaddressid                        as location_fk,
-    base.salesreasonid                          as salesreasonid_fk,
-    base.creditcardid                           as creditcardid_fk,
+    base.productid                               as productid_fk,
+    base.customerid                              as customerid_fk,
+    base.shiptoaddressid                         as location_fk,
+    base.salesreasonid                           as salesreasonid_fk,
+    base.creditcardid                            as creditcardid_fk,
 
     -- Atributo
-    base.status                                 as status,
+    base.status                                  as status,
 
     -- Métricas
-    base.orderqty                               as orderqty,
-    (base.unitprice * base.orderqty)            as gross_amount,
+    base.orderqty                                as orderqty,
+    (base.unitprice * base.orderqty)             as gross_amount,
+
     (base.unitprice * base.orderqty * (1 - coalesce(base.unitpricediscount, 0))) as net_amount,
-    (base.unitprice * base.orderqty)
-      - (base.unitprice * base.orderqty * (1 - coalesce(base.unitpricediscount, 0))) as discount_amount
+    (base.unitprice * base.orderqty) - (base.unitprice * base.orderqty * (1 - coalesce(base.unitpricediscount, 0))) as discount_amount
 
   from base
 )
 
 select *
 from final
+

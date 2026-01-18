@@ -4,9 +4,9 @@ with source as (
 
 staged as (
   select
-    cast(customerid as bigint)                as customerid,
-    cast(personid as bigint)                  as personid,
-    cast(storeid as bigint)                   as storeid
+    cast(customerid as bigint)            as customerid,
+    cast(personid as bigint)              as personid,
+    cast(storeid as bigint)               as storeid
   from source
 )
 
