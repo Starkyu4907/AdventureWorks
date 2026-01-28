@@ -1,6 +1,6 @@
 # Adventure Works — Analytics Engineering Project  
 **Certificação em Engenharia de Analytics | Indicium**  
-**Autor:** Matheus Cabral  
+**Autor:** Matheus Cabral da Silva
 
 ---
 
