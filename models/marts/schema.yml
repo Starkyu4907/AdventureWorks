@@ -1,0 +1,175 @@
+version: 2
+
+models:
+  # =========================
+  # DIMENSIONS
+  # =========================
+  - name: dim_date
+    description: "Dimensão de datas (calendário)."
+    columns:
+      - name: date_sk
+        description: "Chave substituta da data."
+        tests: [not_null, unique]
+      - name: date
+        description: "Data no formato DATE."
+        tests: [not_null, unique]
+      - name: year
+        description: "Ano."
+        tests: [not_null]
+      - name: month
+        description: "Mês (1-12)."
+        tests: [not_null]
+      - name: month_name
+        description: "Nome do mês."
+      - name: quarter
+        description: "Trimestre (1-4)."
+
+  - name: dim_product
+    description: "Dimensão de produtos."
+    columns:
+      - name: productid
+        description: "Chave natural do produto (origem)."
+        tests: [not_null, unique]
+      - name: productname
+        description: "Nome do produto."
+        tests: [not_null]
+      - name: productnumber
+        description: "Código do produto."
+      - name: color
+        description: "Cor."
+      - name: listprice
+        description: "Preço de lista."
+      - name: productmodelid
+        description: "ID do modelo do produto."
+      - name: product_model_name
+        description: "Nome do modelo do produto."
+
+  - name: dim_customer
+    description: "Dimensão de clientes (pessoa e/ou loja)."
+    columns:
+      - name: customerid
+        description: "Chave natural do cliente (origem)."
+        tests: [not_null, unique]
+      - name: personid
+        description: "ID da pessoa (quando aplicável)."
+      - name: storeid
+        description: "ID da loja (quando aplicável)."
+      - name: personname
+        description: "Nome da pessoa (quando aplicável)."
+      - name: storename
+        description: "Nome da loja (quando aplicável)."
+
+  - name: dim_location
+    description: "Dimensão de localização (endereço/cidade/estado/país)."
+    columns:
+      - name: location_sk
+        description: "Chave substituta de localização."
+        tests: [not_null, unique]
+      - name: addressid
+        description: "Chave natural do endereço (origem)."
+        tests: [not_null, unique]
+      - name: city
+        description: "Cidade."
+        tests: [not_null]
+      - name: stateprovinceid
+        description: "ID do estado/província."
+        tests: [not_null]
+      - name: state_name
+        description: "Nome do estado/província."
+      - name: countryregioncode
+        description: "Código do país/região."
+      - name: country_name
+        description: "Nome do país/região."
+
+  - name: dim_creditcard
+    description: "Dimensão de cartões de crédito."
+    columns:
+      - name: creditcardid
+        description: "Chave natural do cartão (origem)."
+        tests: [not_null, unique]
+      - name: cardtype
+        description: "Tipo do cartão."
+        tests: [not_null]
+
+  - name: dim_sales_reason
+    description: "Dimensão de motivo de venda."
+    columns:
+      - name: salesreasonid
+        description: "Chave natural do motivo (origem)."
+        tests: [not_null, unique]
+      - name: reason_name
+        description: "Nome do motivo."
+        tests: [not_null]
+      - name: reasontype
+        description: "Tipo do motivo (Promotion/Marketing/Other)."
+
+  # =========================
+  # FACT
+  # =========================
+  - name: fct_sales
+    description: "Fato de vendas no grão: 1 linha por item de pedido."
+    columns:
+      - name: salesorderid
+        description: "ID do pedido (degenerate dimension)."
+        tests: [not_null]
+      - name: salesorderdetailid
+        description: "ID do item do pedido (degenerate dimension)."
+        tests: [not_null, unique]
+
+      - name: date_fk
+        description: "FK para dim_date."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_sk
+
+      - name: productid_fk
+        description: "FK para dim_product."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_product')
+              field: productid
+
+      - name: customerid_fk
+        description: "FK para dim_customer."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customer')
+              field: customerid
+
+      - name: location_fk
+        description: "FK para dim_location."
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_location')
+              field: addressid
+
+      # Aqui NÃO coloca not_null se você já viu que pode ser nulo (ex.: sem cartão / sem motivo)
+      - name: creditcardid_fk
+        description: "FK para dim_creditcard (pode ser nulo)."
+        tests:
+          - relationships:
+              to: ref('dim_creditcard')
+              field: creditcardid
+
+      - name: salesreasonid_fk
+        description: "FK para dim_sales_reason (pode ser nulo)."
+        tests:
+          - relationships:
+              to: ref('dim_sales_reason')
+              field: salesreasonid
+
+      - name: status
+        description: "Status do pedido."
+      - name: orderqty
+        description: "Quantidade comprada."
+      - name: gross_amount
+        description: "Valor bruto."
+      - name: net_amount
+        description: "Valor líquido."
+      - name: discount_amount
+        description: "Valor de desconto."

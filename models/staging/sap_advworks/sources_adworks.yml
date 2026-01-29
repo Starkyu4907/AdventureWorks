@@ -217,9 +217,8 @@ sources:
         description: "Cadastro de países/regiões."
         columns:
           - name: countryregioncode
-            description: "Código do país/região."
+            description: "Código do país/região. (Pode vir nulo no dado bruto; regra aplicada no staging)."
             tests:
-              - not_null
               - unique
           - name: name
             description: "Nome do país/região."
@@ -260,3 +259,34 @@ sources:
             description: "Nome do modelo."
             tests:
               - not_null
+
+models:
+  # ------------------------
+  # STAGING
+  # ------------------------
+  - name: stg_person_countryregion
+    description: "Staging de países/regiões com padronização de tipos e correção de nulos (Namibia)."
+    columns:
+      - name: countryregioncode
+        description: "Código do país/região (corrigido no staging; Namibia recebe 'NA')."
+        tests:
+          - unique
+      - name: country_name
+        description: "Nome do país/região."
+
+
+  # ------------------------
+  # DIMENSIONS
+  # ------------------------
+  - name: dim_countryregion
+    description: "Dimensão de país/região derivada do staging."
+    columns:
+      - name: countryregion_sk
+        description: "Surrogate key da dimensão."
+
+      - name: countryregioncode
+        description: "Código do país/região (não-nulo)."
+
+      - name: country_name
+        description: "Nome do país/região."
+        
